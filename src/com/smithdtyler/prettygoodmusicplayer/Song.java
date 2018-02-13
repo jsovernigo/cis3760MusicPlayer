@@ -2,6 +2,7 @@ package com.smithdtyler.prettygoodmusicplayer;
 
 /**
  * Created by Liam on 2018-02-13.
+ * Pretty basic song object to store data
  */
 
 public class Song {
