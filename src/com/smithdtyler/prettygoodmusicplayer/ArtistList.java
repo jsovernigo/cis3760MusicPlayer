@@ -19,6 +19,7 @@
 package com.smithdtyler.prettygoodmusicplayer;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -190,6 +191,10 @@ import java.util.Map;
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = sharedPref.getString("pref_theme", getString(R.string.light));
         String size = sharedPref.getString("pref_text_size", getString(R.string.medium));
+
+		ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         Log.i(TAG, "got configured theme " + theme);
         Log.i(TAG, "got configured size " + size);
         currentTheme = theme;
