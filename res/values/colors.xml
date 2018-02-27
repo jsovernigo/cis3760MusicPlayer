@@ -1,7 +1,7 @@
 <resources>
 
 <color name="white">#ffffff</color>
-<color name="darkishgray">#dbdbdb</color>
+<color name="darkishgray">#ffffff</color>
 <color name="darkerdarkishgray">#2e2e2e</color>
 <color name="black">#000000</color>
 <color name="lightdivider">#7070FF</color>
