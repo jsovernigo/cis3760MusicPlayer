@@ -26,6 +26,14 @@ public class Song {
     public String getAlbum(){return album;}
     public String getFileName(){return file;}
 
+    public Map<String, String> getListViewFormat() {
+        HashMap<String, String> format;
+        format = new HashMap<>();
+
+        format.put("song", this.name);
+        return format;
+    }
+
     public static class SongNameComparator implements Comparator<Song> {
         @Override
         public int compare(final Song s1,final Song s2){
@@ -46,6 +54,7 @@ public class Song {
             return s1.getAlbum().compareTo(s2.getAlbum());
         }
     }
+
 
 }
 
