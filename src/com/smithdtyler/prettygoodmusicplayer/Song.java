@@ -34,6 +34,22 @@ public class Song {
         return format;
     }
 
+    /**
+     * @author Julian Sovernigo
+     * @param keywords - the array of keywords that we are searching with.
+     * @return true if any keyword exists in the artist, album, or song name.
+     */
+    public boolean matchesKeywords(String[] keywords) {
+
+        for (int i = 0; i < keywords.length; i++) {
+            String keyword = keywords[i];
+            if (this.artist.contains(keyword) || this.album.contains(keyword) || this.name.contains(keyword)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static class SongNameComparator implements Comparator<Song> {
         @Override
         public int compare(final Song s1,final Song s2){

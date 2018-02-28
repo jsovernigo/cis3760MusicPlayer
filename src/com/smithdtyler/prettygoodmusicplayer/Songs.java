@@ -23,7 +23,6 @@ import java.util.*;
 
 /*
     Better Song list prototype
-
 */
 
 
@@ -77,4 +76,15 @@ public class Songs {
         return songs;
     }
 
+
+    public List<Song> searchByKeywords(String[] keywords) {
+        List<Song> songs = new ArrayList<>();
+
+        for(Song s : this.songList) {
+            if (s.matchesKeywords(keywords)) {
+                songs.add(s);
+            }
+        }
+        return songs;
+    }
 }
