@@ -7,13 +7,14 @@
     tools:context="com.smithdtyler.prettygoodmusicplayer.Homepage">
 
     <ImageButton
-        android:id="@+id/btn_home"
+        android:id="@+id/btn_browse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="48dp"
         android:background="@android:color/transparent"
+        android:contentDescription="@string/btn_browse"
         android:src="@drawable/button_browse"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,6 +28,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@android:color/transparent"
+        android:contentDescription="@string/btn_playlist"
         android:src="@drawable/button_playlists"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,6 +42,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@android:color/transparent"
+        android:contentDescription="@string/btn_settings"
         android:src="@drawable/button_settings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,8 +56,9 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@android:color/transparent"
+        android:contentDescription="@string/btn_search"
         android:src="@drawable/button_search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_home" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_browse" />
 </android.support.constraint.ConstraintLayout>
