@@ -18,7 +18,7 @@ public class Homepage extends Activity {
         //Buttons
         ImageButton btn_home = (ImageButton) findViewById(R.id.btn_home);
         ImageButton btn_playlists = (ImageButton) findViewById(R.id.btn_playlists);
-        Button btn_search = (Button) findViewById(R.id.btn_search);
+        ImageButton btn_search = (ImageButton) findViewById(R.id.btn_search);
         ImageButton btn_settings = (ImageButton) findViewById(R.id.btn_settings);
 
         //Move to Home
