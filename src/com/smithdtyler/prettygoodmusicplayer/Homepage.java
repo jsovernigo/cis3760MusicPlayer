@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 public class Homepage extends Activity {
+    public static final String KEYWORDS = "KEYWORDS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

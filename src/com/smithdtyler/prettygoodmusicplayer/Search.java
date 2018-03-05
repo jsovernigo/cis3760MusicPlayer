@@ -15,12 +15,6 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * Created by julian on 28/02/18.
@@ -29,177 +23,92 @@ import java.util.Map;
 public class Search extends Activity {
 	public static final String SONG_ABS_FILE_NAME_LIST = "SEARCH";
 	public static final String SONG_ABS_FILE_NAME_LIST_POSITION = "SEARCH_POSITION";
+	public static final String[] KEYWORDS = {""};
 	private static final String TAG = "Search";
-	private List<Map<String,String>> songs;
+
+	private static Songs listOfSongs;
+
+
 	private SimpleAdapter simpleAdpt;
-	private List<String> songAbsFileNameList;
 	private String currentTheme;
 	private String currentSize;
 	private boolean hasResume = false;
 	private int resumeFilePos = -1;
 	private int resumeProgress;
 	private String resume;
-	private String artistDir;
-	private File albumDir;
 	private boolean audiobookMode;
 
-	private void populateSongs(String artistName, String albumDirName, String albumPath, String artistAbsDirName){
+    /**
+     * populateSongs
+     * This function uses a root directory to collect all classified songs from the
+     * music library.
+     * @author Julian Sovernigo
+     * @param rootDir - the root directory of the songs that we are looking for.
+     */
+	private void populateSongs(String rootDir, final String[] keywords) {
+        listOfSongs = new Songs();
 
-		songs = new ArrayList<Map<String,String>>();
+	    File root = new File(rootDir);
+	    File[] artists = root.listFiles();
 
-		File artistDir = new File(artistAbsDirName);
-		if(albumDirName != null && albumPath != null){
-			albumDir = new File(albumPath);
-			if(!albumDir.exists()) {
-				albumDir = new File(artistDir, albumDirName);
-			}
-		} else {
-			albumDir = artistDir;
-		}
+	    // for all artists
+	    for (File f : artists) {
+            File[] albums = f.listFiles();
 
-		SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
-		resume = prefs.getString(albumDir.getAbsolutePath(), null);
-		if(resume != null){
-			Log.i(TAG, "Found resumable time! " + resume);
-		} else {
-			Log.i(TAG, "Didn't find a resumable time");
-		}
-		Log.i(TAG, "Artist dir: " + artistDir);
-		Log.i(TAG, "Album dir: " + albumDir);
+            // for all albums
+            for (File a : albums) {
+                File[] songs = a.listFiles();
 
-		List<File> songFiles = new ArrayList<File>();
+                // for all songs
+                for (File s: songs) {
+                    Song song = new Song(s.getName(), f.getName(), a.getName(), s.getAbsolutePath());
 
-		// Did the user provide an exact path to the album?
-		if(albumDir.exists() && albumDir.isDirectory() && (albumDir.listFiles() != null)){
-			Log.d(TAG, "external storage directory = " + albumDir);
+                    // if we have keywords we need to fulfill
+                    if (keywords != null && keywords.length > 0) {
+                        if (song.matchesKeywords(keywords)) {
+                            listOfSongs.addSong(song);
+                        }
+                    } else {
+                        listOfSongs.addSong(song);
+                    }
+                }
+            }
+        }
 
-			for(File song : Utils.getAllSongsInDirRecursive(albumDir)){
-				if(Utils.isValidSongFile(song)){
-					songFiles.add(song);
-				} else {
-					Log.v(TAG, "Found invalid song file " + song);
-				}
-			}
-
-			// We assume that song files start with XX where XX is a number indicating the songs location within an album.
-			Collections.sort(songFiles, Utils.songFileComparator);
-			// Did the user provide an artist, but no album?
-		} else if(artistDir.exists() && artistDir.listFiles() != null) {
-			for (File f : artistDir.listFiles()) {
-				if (f.isDirectory()) {
-					List<File> songs = Utils.getAllSongsInDirRecursive(f);
-					songFiles.addAll(songs);
-				} else if (Utils.isValidSongFile(f)) {
-					songFiles.add(f);
-				}
-			}
-			// Did the user pick an album from 'All'?
-		}else if(albumDir.exists() && albumDir.isDirectory() && albumDir.listFiles() != null){
-			List<File> songs = Utils.getAllSongsInDirRecursive(albumDir);
-			songFiles.addAll(songs);
-		} else {
-			// If the album didn't exist, just list all of the songs we can find.
-			Log.d(TAG, "Adding all songs...");
-			File bestGuessMusicDir = Utils.getBestGuessMusicDirectory();
-			String prefDir = prefs.getString("ARTIST_DIRECTORY", bestGuessMusicDir.getAbsolutePath());
-			File baseDir = new File(prefDir);
-			List<File> albums = Utils.getAllAlbumsInDirRecursive(baseDir);
-
-			Collections.sort(albums, Utils.albumFileComparator);
-
-			for(File albumFile : albums){
-				if(Utils.isValidAlbumDirectory(albumFile)){
-					// get the songs in the album, sort them, then
-					// add them to the list
-					List<File> songFilesInAlbum = Utils.getAllSongsInDirRecursive(albumFile);
-
-					List<File> songFilesInAlbumList = new ArrayList<File>();
-					for(File songFile : songFilesInAlbum){
-						if(Utils.isValidSongFile(songFile)){
-							songFilesInAlbumList.add(songFile);
-						}
-					}
-					Collections.sort(songFilesInAlbumList, Utils.songFileComparator);
-					songFiles.addAll(songFilesInAlbumList);
-				}
-			}
-		}
-
-		for(File song : songFiles){
-			Log.v(TAG, "Adding song " + song);
-			Map<String,String> map = new HashMap<String, String>();
-			map.put("song", Utils.getPrettySongName(song));
-			songs.add(map);
-		}
-
-		// If there is a value set to resume to, and audiobook mode is enabled
-		// add an option to start where they left off
-		if(resume != null && audiobookMode){
-			try{
-				String resumeSongName = resume.substring(0, resume.lastIndexOf('~'));
-
-				File resumeFile = new File(albumDir, resumeSongName);
-				if(resumeFile.exists()){
-					String progress = resume.substring(resume.lastIndexOf('~') + 1);
-					int prog = Integer.valueOf(progress);
-					resumeProgress = prog;
-					resumeSongName = Utils.getPrettySongName(resumeSongName);
-					int minutes = prog / (1000 * 60);
-					int seconds = (prog % (1000 * 60)) / 1000;
-					String time = String.format(Locale.getDefault(), "%d:%02d", minutes, seconds);
-					Map<String, String> map = new HashMap<String, String>();
-					map.put("song", getResources().getString(R.string.resume) + ": " + resumeSongName + " (" + time + ")");
-					songs.add(0, map);
-					// loop over the available songs, make sure we still have it
-					for(int i = 0; i< songFiles.size(); i++){
-						File song = songFiles.get(i);
-						if(song.equals(resumeFile)){
-							resumeFilePos  = i;
-							break;
-						}
-					}
-					if(resumeFilePos >= 0){
-						hasResume = true;
-					}
-				} else {
-					Log.w(TAG, "Couldn't find file to resume");
-				}
-			} catch (Exception e){
-				Log.w(TAG, "Couldn't add resume song name", e);
-				hasResume = false;
-			}
-		}
-
-		songAbsFileNameList = new ArrayList<String>();
-		for(File song : songFiles){
-			songAbsFileNameList.add(song.getAbsolutePath());
-		}
+        return;
 	}
 
+    /**
+     * onCreate
+     * when the page is created, use the search terms to collect all songs.
+     * Otherwise, if no Keywords were provided, just ignore it.
+     * @author Julian Sovernigo
+     * @param savedInstanceState
+     */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		 // Get the message from the intent
 	    Intent intent = getIntent();
-	    final String artistName = intent.getStringExtra(ArtistList.ARTIST_NAME);
-	    final String album = intent.getStringExtra(AlbumList.ALBUM_NAME);
-		final String albumPath = intent.getStringExtra(AlbumList.ALBUM_PATH);
-	    artistDir = intent.getStringExtra(ArtistList.ARTIST_ABS_PATH_NAME);
+		final String[] keywords = intent.getStringArrayExtra(Homepage.KEYWORDS);
 
+		// create the bar up at the top of the page.
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
-		actionBar.setTitle(artistName + ": " + album);
+		actionBar.setTitle("Search");
 
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = sharedPref.getString("pref_theme", getString(R.string.light));
         String size = sharedPref.getString("pref_text_size", getString(R.string.medium));
         audiobookMode = sharedPref.getBoolean("pref_audiobook_mode", false);
-        Log.i(TAG, "got configured theme " + theme);
-        Log.i(TAG, "got configured size " + size);
+
         currentTheme = theme;
         currentSize = size;
         // These settings were fixed in english for a while, so check for old style settings as well as language specific ones.
+
+
+        // set the theme to the proper dark or light theme
         if(theme.equalsIgnoreCase(getString(R.string.dark)) || theme.equalsIgnoreCase("dark")){
         	Log.i(TAG, "setting theme to " + theme);
         	if(size.equalsIgnoreCase(getString(R.string.small)) || size.equalsIgnoreCase("small")){
@@ -222,11 +131,11 @@ public class Search extends Activity {
 
 		setContentView(R.layout.activity_song_list);
 
-	    Log.i(TAG, "Getting songs for " + album);
+	    /* TODO FIX? */
+	    this.populateSongs(Utils.getBestGuessMusicDirectory().getAbsolutePath(), keywords);
 
-	    populateSongs(artistName, album, albumPath, artistDir);
 
-        simpleAdpt = new SimpleAdapter(this, songs, R.layout.pgmp_list_item, new String[] {"song"}, new int[] {R.id.PGMPListItemText});
+        simpleAdpt = new SimpleAdapter(this, listOfSongs.transformToListViewCompat(), R.layout.pgmp_list_item, new String[] {"song"}, new int[] {R.id.PGMPListItemText});
         ListView lv = (ListView) findViewById(R.id.songListView);
         lv.setAdapter(simpleAdpt);
 
@@ -237,12 +146,13 @@ public class Search extends Activity {
                                      long id) {
 
             	 Intent intent = new Intent(Search.this, NowPlaying.class);
-            	 intent.putExtra(AlbumList.ALBUM_NAME, album);
-            	 intent.putExtra(ArtistList.ARTIST_NAME, artistName);
-            	 String[] songNamesArr = new String[songAbsFileNameList.size()];
-            	 songAbsFileNameList.toArray(songNamesArr);
-            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST, songNamesArr);
-            	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistDir);
+
+            	 intent.putExtra(AlbumList.ALBUM_NAME, listOfSongs.getSongByIndex(position).getAlbum());
+            	 intent.putExtra(ArtistList.ARTIST_NAME, listOfSongs.getSongByIndex(position).getArtist());
+            	 String[] songNamesArr = new String[listOfSongs.size()];
+
+            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST, listOfSongs.getFilePaths());
+            	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, listOfSongs.getSongByIndex(position).getFilePath());
             	 intent.putExtra(NowPlaying.KICKOFF_SONG, true);
 
             	 if(hasResume){
@@ -290,30 +200,30 @@ public class Search extends Activity {
         boolean audiobookModePref = sharedPref.getBoolean("pref_audiobook_mode", false);
         Log.i(TAG, "got configured theme " + theme);
         Log.i(TAG, "Got configured size " + size);
-        if(currentTheme == null){
+        if (currentTheme == null) {
         	currentTheme = theme;
         }
 
-        if(currentSize == null){
+        if (currentSize == null) {
         	currentSize = size;
         }
 
         boolean resetResume = false;
-        if(audiobookMode != audiobookModePref){
+        if (audiobookMode != audiobookModePref) {
         	resetResume = true;
         }
         SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
-        String newResume = prefs.getString(albumDir.getAbsolutePath(), null);
-        if(resume != null && newResume != null && !newResume.equals(resume)){
+        String newResume = prefs.getString(Utils.getBestGuessMusicDirectory().getAbsolutePath(), null);
+        if (resume != null && newResume != null && !newResume.equals(resume)) {
         	resetResume = true;
-        }else if(resume == null && newResume != null){
+        } else if (resume == null && newResume != null) {
         	resetResume = true;
         }
 
         if(!currentTheme.equals(theme) || !currentSize.equals(size) || resetResume){
         	// Calling finish and startActivity will re-launch this activity, applying the new settings
         	finish();
-        	startActivity(getIntent());
+        	startActivity(this.getIntent());
         }
 	}
 

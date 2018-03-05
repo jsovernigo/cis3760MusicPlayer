@@ -52,6 +52,7 @@ public class AlbumList extends AbstractMusicList {
 	private String currentSize;
 
 	private List<File> albumFiles = null;
+
 	/**
 	 *
 	 * @param artistName

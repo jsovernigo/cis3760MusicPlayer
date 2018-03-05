@@ -5,6 +5,7 @@ package com.smithdtyler.prettygoodmusicplayer;
  * Pretty basic song object to store data
  */
 
+import java.io.File;
 import java.util.*;
 
 public class Song {
@@ -48,6 +49,17 @@ public class Song {
             }
         }
         return false;
+    }
+
+    /**
+     * @author Julian Sovernigo
+     * @return the file path for this file.
+     */
+    public String getFilePath() {
+        File f = new File(this.file);
+        String path = f.getAbsolutePath();
+
+        return path;
     }
 
     public static class SongNameComparator implements Comparator<Song> {

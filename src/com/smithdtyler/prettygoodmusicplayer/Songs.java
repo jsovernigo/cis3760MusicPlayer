@@ -4,21 +4,6 @@ package com.smithdtyler.prettygoodmusicplayer;
  * Created by Liam on 2018-02-13.
  */
 
-import android.app.ActionBar;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.File;
 import java.util.*;
 
 /*
@@ -37,10 +22,49 @@ public class Songs {
         songList.add(s);
     }
 
+    /**
+     * @author Julian Sovernigo
+     * @return the arraylist of map<String, String> objects that ListView expects.
+     */
+    public List<Map<String, String>> transformToListViewCompat() {
+        List<Map<String, String>> export;
+        export = new ArrayList<Map<String, String>>();
+
+        // for each song we have in our list
+        for (Song s : this.songList) {
+            export.add(s.getListViewFormat());
+        }
+
+        return export;
+    }
+
+    /**
+     * @author Julian Sovernigo
+     * @return the size of the list of songs.
+     */
+    public int size() {
+        return this.songList.size();
+    }
+
     public Song getSongByIndex(int i){
         if(i < 0 || i >= songList.size())
             return null;
         return songList.get(i);
+    }
+
+    /**
+     * @author Julian Sovernigo
+     * @return a string array of all file paths.
+     */
+    public String[] getFilePaths() {
+        int i = 0;
+        String[] paths = new String[this.songList.size()];
+        for (Song s: this.songList) {
+            paths[i] = s.getFilePath();
+            i++;
+        }
+
+        return paths;
     }
 
     public List<Song> getSongsByArtist(String artist){
