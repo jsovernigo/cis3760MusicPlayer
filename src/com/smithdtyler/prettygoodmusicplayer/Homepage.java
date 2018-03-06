@@ -1,14 +1,20 @@
 package com.smithdtyler.prettygoodmusicplayer;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 //import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 public class Homepage extends Activity {
     private Object currentTheme;
+
+    public static final String KEYWORDS = "keywords";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
