@@ -52,6 +52,7 @@ public class AlbumList extends AbstractMusicList {
 	private String currentSize;
 
 	private List<File> albumFiles = null;
+
 	/**
 	 *
 	 * @param artistName
@@ -109,7 +110,7 @@ public class AlbumList extends AbstractMusicList {
 		 intent.putExtra(ALBUM_PATH, "All");
        	 intent.putExtra(ArtistList.ARTIST_NAME, artist.getName());
        	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistPath);
-       	 startActivity(intent);
+
        	 // In this case we don't want to add the AlbumList to the back stack
        	 // so call 'finish' immediately.
        	 finish();
