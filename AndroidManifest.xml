@@ -58,14 +58,11 @@
             android:name=".ArtistList"
             android:label="@string/title_activity_artist_list">
         </activity>
-        <activity
-            android:name=".SearchableActivity"
-            android:label="@string/title_activity_searchable">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-        </activity>
 
+        <activity
+            android:name=".Search"
+            android:label="Search">
+        </activity>
         <!--
         The service has android:exported="true" because that's needed for
         control from the notification. Not sure why it causes a warning...

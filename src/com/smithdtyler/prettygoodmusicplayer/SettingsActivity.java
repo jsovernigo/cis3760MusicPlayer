@@ -121,8 +121,7 @@ public class SettingsActivity extends PreferenceActivity {
 		private File path;
 		private List<File> files;
 		
-		private DirectoryPickerOnClickListener(SettingsActivity activity,
-				File root) {
+		private DirectoryPickerOnClickListener(SettingsActivity activity, File root) {
 			this.path = root;
 			files = Utils.getPotentialSubDirectories(root);
 			this.activity = activity;

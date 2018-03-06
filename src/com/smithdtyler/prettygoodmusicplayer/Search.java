@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * Created by julian on 28/02/18.
@@ -92,6 +93,12 @@ public class Search extends Activity {
 		 // Get the message from the intent
 	    Intent intent = getIntent();
 		final String[] keywords = intent.getStringArrayExtra(Homepage.KEYWORDS);
+
+		String s = "";
+		for (String k : keywords) {
+			s = s + k + " ";
+		}
+		Log.i(TAG, s);
 
 		// create the bar up at the top of the page.
 		ActionBar actionBar = getActionBar();
