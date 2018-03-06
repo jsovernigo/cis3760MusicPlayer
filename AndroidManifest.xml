@@ -39,17 +39,22 @@
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings">
+        </activity>
         <activity
             android:name=".AlbumList"
-            android:label="@string/title_activity_album_list"></activity>
+            android:label="@string/title_activity_album_list">
+        </activity>
         <activity
             android:name=".SongList"
-            android:label="@string/title_activity_song_list"></activity>
+            android:label="@string/title_activity_song_list">
+
+        </activity>
         <activity
             android:name=".NowPlaying"
             android:exported="true"
-            android:label="@string/title_activity_now_playing"></activity>
+            android:label="@string/title_activity_now_playing">
+        </activity>
         <activity
             android:name=".ArtistList"
             android:label="@string/title_activity_artist_list">
@@ -66,7 +71,8 @@
         <service
             android:name=".MusicPlaybackService"
             android:exported="true"
-            android:icon="@drawable/ic_pgmp_launcher"></service>
+            android:icon="@drawable/ic_pgmp_launcher">
+        </service>
 
         <receiver
             android:name=".MusicBroadcastReceiver"
