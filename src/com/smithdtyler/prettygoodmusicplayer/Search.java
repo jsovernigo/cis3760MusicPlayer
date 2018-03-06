@@ -53,27 +53,33 @@ public class Search extends Activity {
 	    File[] artists = root.listFiles();
 
 	    // for all artists
-	    for (File f : artists) {
-            File[] albums = f.listFiles();
+		if (artists != null) {
+			for (File f : artists) {
+				File[] albums = f.listFiles();
 
-            // for all albums
-            for (File a : albums) {
-                File[] songs = a.listFiles();
+				// for all albums
+				if (albums != null) {
+					for (File a : albums) {
+						File[] songs = a.listFiles();
 
-                // for all songs
-                for (File s: songs) {
-                    Song song = new Song(s.getName(), f.getName(), a.getName(), s.getAbsolutePath());
+						// for all songs
+						if (songs != null) {
+							for (File s : songs) {
+								Song song = new Song(s.getName(), f.getName(), a.getName(), s.getAbsolutePath());
 
-                    // if we have keywords we need to fulfill
-                    if (keywords != null && keywords.length > 0) {
-                        if (song.matchesKeywords(keywords)) {
-                            listOfSongs.addSong(song);
-                        }
-                    } else {
-                        listOfSongs.addSong(song);
-                    }
-                }
-            }
+								// if we have keywords we need to fulfill
+								if (keywords != null && keywords.length > 0) {
+									if (song.matchesKeywords(keywords)) {
+										listOfSongs.addSong(song);
+									}
+								} else {
+									listOfSongs.addSong(song);
+								}
+							}
+						}
+					}
+				}
+			}
         }
 
         return;
@@ -139,7 +145,7 @@ public class Search extends Activity {
 		setContentView(R.layout.activity_song_list);
 
 	    /* TODO FIX? */
-	    this.populateSongs(Utils.getBestGuessMusicDirectory().getAbsolutePath(), keywords);
+	    this.populateSongs(/*Utils.getBestGuessMusicDirectory().getAbsolutePath()*/"/storage/emulated/0/", keywords);
 
 
         simpleAdpt = new SimpleAdapter(this, listOfSongs.transformToListViewCompat(), R.layout.pgmp_list_item, new String[] {"song"}, new int[] {R.id.PGMPListItemText});
