@@ -165,7 +165,7 @@ public class Search extends Activity {
             	 String[] songNamesArr = new String[listOfSongs.size()];
 
             	 intent.putExtra(SONG_ABS_FILE_NAME_LIST, listOfSongs.getFilePaths());
-            	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, listOfSongs.getSongByIndex(position).getFilePath());
+            	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, listOfSongs.getSongByIndex(position).getArtistPath());
             	 intent.putExtra(NowPlaying.KICKOFF_SONG, true);
 
             	 if(hasResume){

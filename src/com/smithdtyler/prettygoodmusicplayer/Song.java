@@ -62,6 +62,17 @@ public class Song {
         return path;
     }
 
+    public String getArtistPath() {
+        File f = new File(this.file);
+        return f.getParentFile().getParentFile().getAbsolutePath();
+    }
+
+    public String getAlbumPath() {
+        File f = new File(this.file);
+        return f.getParentFile().getAbsolutePath();
+    }
+
+
     public static class SongNameComparator implements Comparator<Song> {
         @Override
         public int compare(final Song s1,final Song s2){
