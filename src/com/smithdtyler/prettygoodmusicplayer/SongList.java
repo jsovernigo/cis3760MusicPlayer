@@ -253,7 +253,9 @@ public class SongList extends AbstractMusicList {
             	 intent.putExtra(AlbumList.ALBUM_NAME, album);
             	 intent.putExtra(ArtistList.ARTIST_NAME, artistName);
             	 String[] songNamesArr = new String[songAbsFileNameList.size()];
+
             	 songAbsFileNameList.toArray(songNamesArr);
+
             	 intent.putExtra(SONG_ABS_FILE_NAME_LIST, songNamesArr);
             	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistDir);
             	 intent.putExtra(NowPlaying.KICKOFF_SONG, true);

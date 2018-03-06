@@ -44,7 +44,7 @@ public class Song {
 
         for (int i = 0; i < keywords.length; i++) {
             String keyword = keywords[i];
-            if (this.artist.contains(keyword) || this.album.contains(keyword) || this.name.contains(keyword)) {
+            if (this.artist.toLowerCase().contains(keyword.toLowerCase()) || this.album.toLowerCase().contains(keyword.toLowerCase()) || this.name.toLowerCase().contains(keyword.toLowerCase())) {
                 return true;
             }
         }

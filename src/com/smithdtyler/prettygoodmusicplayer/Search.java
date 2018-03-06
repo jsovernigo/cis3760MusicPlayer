@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +29,7 @@ public class Search extends Activity {
 	private static final String TAG = "Search";
 
 	private static Songs listOfSongs;
+	private static String baseDir;
 
 
 	private SimpleAdapter simpleAdpt;
@@ -98,7 +100,10 @@ public class Search extends Activity {
 
 		 // Get the message from the intent
 	    Intent intent = getIntent();
-		final String[] keywords = intent.getStringArrayExtra(Homepage.KEYWORDS);
+        SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
+
+        final String[] keywords = intent.getStringArrayExtra(Homepage.KEYWORDS);
+        baseDir = prefs.getString("ARTIST_DIRECTORY", new File(Environment.getExternalStorageDirectory(), "Music").getAbsolutePath());
 
 		String s = "";
 		for (String k : keywords) {
@@ -145,7 +150,14 @@ public class Search extends Activity {
 		setContentView(R.layout.activity_song_list);
 
 	    /* TODO FIX? */
-	    this.populateSongs(/*Utils.getBestGuessMusicDirectory().getAbsolutePath()*/"/storage/emulated/0/", keywords);
+	    this.populateSongs(baseDir, keywords);
+	    Log.i(TAG, "Search starting in directory: " + Utils.getBestGuessMusicDirectory().getAbsolutePath());
+	    for (int i = 0; i < listOfSongs.size(); i++) {
+	        Log.i(TAG, "Got: " + listOfSongs.getSongByIndex(i).toString());
+        }
+        if(listOfSongs.size() == 0) {
+	        Log.i(TAG, "No songs were found.");
+        }
 
 
         simpleAdpt = new SimpleAdapter(this, listOfSongs.transformToListViewCompat(), R.layout.pgmp_list_item, new String[] {"song"}, new int[] {R.id.PGMPListItemText});
@@ -164,8 +176,13 @@ public class Search extends Activity {
             	 intent.putExtra(ArtistList.ARTIST_NAME, listOfSongs.getSongByIndex(position).getArtist());
             	 String[] songNamesArr = new String[listOfSongs.size()];
 
-            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST, listOfSongs.getFilePaths());
-            	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, listOfSongs.getSongByIndex(position).getFilePath());
+            	 String[] paths = listOfSongs.getFilePaths();
+            	 for (String p : paths) {
+            	     Log.i(TAG, "PATHS PASSED TO SEARCH: " + p);
+                 }
+
+            	 intent.putExtra(SongList.SONG_ABS_FILE_NAME_LIST, paths);
+            	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, "All");//listOfSongs.getSongByIndex(position).getArtistPath());
             	 intent.putExtra(NowPlaying.KICKOFF_SONG, true);
 
             	 if(hasResume){
