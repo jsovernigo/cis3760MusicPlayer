@@ -715,8 +715,7 @@ public class MusicPlaybackService extends Service {
 		}
 
 		if(!this._shuffle){
-			songAbsoluteFileNamesPosition = (songAbsoluteFileNamesPosition + 1)
-					% songAbsoluteFileNames.length;
+			songAbsoluteFileNamesPosition = (songAbsoluteFileNamesPosition + 1) % songAbsoluteFileNames.length;
 		} else {
 			songAbsoluteFileNamesPosition = grabNextShuffledPosition();
 		}

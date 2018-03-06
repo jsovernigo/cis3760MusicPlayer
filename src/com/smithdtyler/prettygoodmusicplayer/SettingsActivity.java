@@ -135,11 +135,7 @@ public class SettingsActivity extends PreferenceActivity {
 		        SharedPreferences prefs = activity.getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
 
 				Log.i(TAG,
-						"Preferences update success: "
-								+ prefs.edit()
-										.putString("ARTIST_DIRECTORY",
-												path.getAbsolutePath())
-										.commit());
+						"Preferences update success: " + prefs.edit().putString("ARTIST_DIRECTORY", path.getAbsolutePath()).commit());
 				// reset the positions in the artist list, since we've changed
 				// lists
 				prefs.edit().putInt("ARTIST_LIST_TOP", Integer.MIN_VALUE)
