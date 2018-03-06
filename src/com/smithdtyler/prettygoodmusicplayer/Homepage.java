@@ -39,13 +39,43 @@ public class Homepage extends Activity {
             }
         });
 
-        //Move to Search
+
         btn_search.setOnClickListener(new View.OnClickListener() {
+
+            private String searchString;
 
             @Override
             public void onClick(View v) {
-                //Intent i = new Intent(Homepage.this, Search.class);
-                //startActivity(i);
+                final Intent i = new Intent(Homepage.this, Search.class);
+                AlertDialog.Builder builder = new AlertDialog.Builder(Homepage.this);
+
+                final EditText input = new EditText(Homepage.this);
+
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                builder.setView(input);
+                searchString = "";
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        searchString = input.getText().toString();
+
+
+                        String[] keywords = searchString.split(" ");
+                        i.putExtra(Homepage.KEYWORDS, keywords);
+                        startActivity(i);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+
             }
         });
     }
