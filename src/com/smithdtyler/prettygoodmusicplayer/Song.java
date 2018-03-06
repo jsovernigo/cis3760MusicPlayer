@@ -62,11 +62,19 @@ public class Song {
         return path;
     }
 
+    /**
+     * @author Julian Sovernigo
+     * @return the artist's directory path.
+     */
     public String getArtistPath() {
         File f = new File(this.file);
         return f.getParentFile().getParentFile().getAbsolutePath();
     }
 
+    /**
+     * @author Julian Sovernigo
+     * @return the album directory, fully qualified.
+     */
     public String getAlbumPath() {
         File f = new File(this.file);
         return f.getParentFile().getAbsolutePath();
