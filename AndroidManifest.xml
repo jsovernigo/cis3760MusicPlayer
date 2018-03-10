@@ -39,31 +39,23 @@
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings">
-        </activity>
+            android:label="@string/title_activity_settings"></activity>
         <activity
             android:name=".AlbumList"
-            android:label="@string/title_activity_album_list">
-        </activity>
+            android:label="@string/title_activity_album_list"></activity>
         <activity
             android:name=".SongList"
-            android:label="@string/title_activity_song_list">
-
-        </activity>
+            android:label="@string/title_activity_song_list"></activity>
         <activity
             android:name=".NowPlaying"
             android:exported="true"
-            android:label="@string/title_activity_now_playing">
-        </activity>
+            android:label="@string/title_activity_now_playing"></activity>
         <activity
             android:name=".ArtistList"
-            android:label="@string/title_activity_artist_list">
-        </activity>
-
+            android:label="@string/title_activity_artist_list"></activity>
         <activity
             android:name=".Search"
-            android:label="Search">
-        </activity>
+            android:label="Search"></activity>
         <!--
         The service has android:exported="true" because that's needed for
         control from the notification. Not sure why it causes a warning...
@@ -71,8 +63,7 @@
         <service
             android:name=".MusicPlaybackService"
             android:exported="true"
-            android:icon="@drawable/ic_pgmp_launcher">
-        </service>
+            android:icon="@drawable/ic_pgmp_launcher"></service>
 
         <receiver
             android:name=".MusicBroadcastReceiver"
@@ -82,6 +73,7 @@
             </intent-filter>
         </receiver>
 
+        <activity android:name=".Playlist"></activity>
     </application>
 
 </manifest>
