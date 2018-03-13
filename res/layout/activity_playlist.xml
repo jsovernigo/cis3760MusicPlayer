@@ -24,7 +24,7 @@
         app:layout_constraintTop_toTopOf="parent"></ListView>
 
     <ImageButton
-        android:id="@+id/btn_pladd"
+        android:id="@+id/btn_pledit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -35,14 +35,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/btn_pledit"
+        android:id="@+id/btn_pladd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:background="@android:color/transparent"
         android:src="@drawable/button_playlist_add"
-        app:layout_constraintEnd_toStartOf="@+id/btn_pladd"
+        app:layout_constraintEnd_toStartOf="@+id/btn_pledit"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
