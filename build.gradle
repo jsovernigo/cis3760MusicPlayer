@@ -59,4 +59,5 @@ dependencies {
 }
 dependencies {
     compile 'com.android.support.constraint:constraint-layout:+'
+    compile 'com.android.support:design:23.0.1'
 }

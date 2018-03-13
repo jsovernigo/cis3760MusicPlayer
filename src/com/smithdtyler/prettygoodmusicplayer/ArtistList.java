@@ -59,14 +59,18 @@ import java.util.Map;
 	private String currentSize;
 
 	private void populateArtists(String baseDir){
-		artists = new ArrayList<Map<String,String>>();
-		File f = new File(baseDir);
+		artists = new ArrayList<>();
+
+		// *** Emulator SD CARD Fix ***
+		//File f = new File(baseDir);
+		File f = Environment.getExternalStorageDirectory();
+
 		if(!f.exists() || !f.isDirectory()){
 			Log.e(TAG, "Storage directory " + f + " does not exist!");
 			return;
 		}
 		
-		List<String> artistDirs = new ArrayList<String>();
+		List<String> artistDirs = new ArrayList<>();
 
 		if(f.listFiles() != null) {
 			for (File dir : f.listFiles()) {
