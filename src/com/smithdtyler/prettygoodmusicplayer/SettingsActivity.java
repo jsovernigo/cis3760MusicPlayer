@@ -25,11 +25,14 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
+import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,6 +54,7 @@ import android.widget.TextView;
  */
 public class SettingsActivity extends PreferenceActivity {
 	private static final String TAG = "SettingsActivity";
+    private static final int READ_REQUEST_CODE = 42;
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
@@ -109,6 +113,7 @@ public class SettingsActivity extends PreferenceActivity {
 					this, path);
 			picker.showDirectoryPicker();
 			Log.i(TAG, "User selected " + picker.path);
+            //performFileSearch();
 			return true;
 		}
 		return super.onPreferenceTreeClick(preferenceScreen, preference);
@@ -203,6 +208,40 @@ public class SettingsActivity extends PreferenceActivity {
 		}
 		
 	}
+
+    public void performFileSearch() {
+
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+
+        startActivityForResult(intent, READ_REQUEST_CODE);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        if (resultCode == RESULT_OK) {
+            Uri treeUri = resultData.getData();
+            DocumentFile pickedDir = DocumentFile.fromTreeUri(this, treeUri);
+
+            String fullPath = treeUri.getPath();
+            String[] split = fullPath.split(":");
+            String musicDir = split[1];
+            Log.d(TAG, "Found dir " + musicDir );
+
+			SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
+
+			boolean saved =  prefs.edit()
+					.putString("ARTIST_DIRECTORY", treeUri.toString())
+					.commit();
+
+			//Before, this would put pickedDir instead of treeUri.toString().
+
+            Log.i(TAG, "Preferences update success: " + saved);
+
+			// reset the positions in the artist list, since we've changed lists
+			prefs.edit().putInt("ARTIST_LIST_TOP", Integer.MIN_VALUE)
+					.putInt("ARTIST_LIST_INDEX", Integer.MIN_VALUE)
+					.apply();
+        }
+    }
 	
 	
 	public static class Item{

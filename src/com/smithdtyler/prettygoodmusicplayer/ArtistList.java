@@ -31,6 +31,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -52,21 +53,29 @@ import java.util.Map;
 	private static final String PICK_DIR_TEXT = "Click to configure...";
 
 	private List<Map<String,String>> artists;
+	private List<String> temp_artists;
 	private SimpleAdapter simpleAdpt;
-	private String baseDir;
+	private ArrayAdapter<String> tempArrayAdapter;
+    private String baseDir;
 	private Object currentTheme;
 	private String currentSize;
 
 	private void populateArtists(String baseDir){
 		artists = new ArrayList<Map<String,String>>();
+		temp_artists = new ArrayList<String>();
 		File f = new File(baseDir);
 		if(!f.exists() || !f.isDirectory()){
 			Log.e(TAG, "Storage directory " + f + " does not exist!");
 			return;
 		}
+
+        /*SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
+		Uri mSaveTreeUri = Uri.parse(prefs.getString("ARTIST_DIRECTORY", ""));
+        DocumentFile pickedDir_test = DocumentFile.fromTreeUri(this, mSaveTreeUri);*/
 		
 		List<String> artistDirs = new ArrayList<String>();
 
+		//if (pickedDir.isDirectory()) {
 		if(f.listFiles() != null) {
 			for (File dir : f.listFiles()) {
 				if (Utils.isValidArtistDirectory(dir)) {
@@ -101,6 +110,7 @@ import java.util.Map;
 				Map<String, String> map = new HashMap<String, String>();
 				map.put("artist", artist);
 				artists.add(map);
+				temp_artists.add(artist);
 			}
 		}
 
@@ -108,6 +118,7 @@ import java.util.Map;
 			Map<String, String> map = new HashMap<String, String>();
 			map.put("artist", PICK_DIR_TEXT);
 			artists.add(map);
+			temp_artists.add(PICK_DIR_TEXT);
 		}
 	}
 	
@@ -123,8 +134,10 @@ import java.util.Map;
         	baseDir = prefDir;
         	populateArtists(baseDir);
             
-            simpleAdpt = new SimpleAdapter(this, artists,  R.layout.pgmp_list_item, new String[] {"artist"}, new int[] {R.id.PGMPListItemText});
-            lv.setAdapter(simpleAdpt);
+            //simpleAdpt = new SimpleAdapter(this, artists,  R.layout.pgmp_list_item, new String[] {"artist"}, new int[] {R.id.PGMPListItemText});
+            //lv.setAdapter(simpleAdpt);
+            tempArrayAdapter = new ArrayAdapter<String>(this, R.layout.pgmp_list_item, R.id.PGMPListItemText, temp_artists);
+            lv.setAdapter(tempArrayAdapter);
         }
         
         int top = prefs.getInt("ARTIST_LIST_TOP", Integer.MIN_VALUE);
@@ -177,9 +190,11 @@ import java.util.Map;
 
         populateArtists(baseDir);
         
-        simpleAdpt = new SimpleAdapter(this, artists, R.layout.pgmp_list_item, new String[] {"artist"}, new int[] {R.id.PGMPListItemText});
+        //simpleAdpt = new SimpleAdapter(this, artists, R.layout.pgmp_list_item, new String[] {"artist"}, new int[] {R.id.PGMPListItemText});
+        tempArrayAdapter = new ArrayAdapter<String>(this, R.layout.pgmp_list_item, R.id.PGMPListItemText, temp_artists);
         ListView lv = (ListView) findViewById(R.id.artistListView);
-        lv.setAdapter(simpleAdpt);
+        //lv.setAdapter(simpleAdpt);
+        lv.setAdapter(tempArrayAdapter);
     }
 
 	@Override
