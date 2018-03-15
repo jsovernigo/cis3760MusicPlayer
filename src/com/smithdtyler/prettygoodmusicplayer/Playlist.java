@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -40,9 +41,11 @@ public class Playlist extends Activity {
         lv = (ListView) findViewById(R.id.playlistListView);
 
         //Buttons
-        ImageButton btn_add = (ImageButton) findViewById(R.id.btn_pladd);
-        ImageButton btn_edit = (ImageButton) findViewById(R.id.btn_pledit);
-        ImageButton btn_delete = (ImageButton) findViewById(R.id.btn_pldelete);
+        final ImageButton btn_add = (ImageButton) findViewById(R.id.btn_pladd);
+        final ImageButton btn_edit = (ImageButton) findViewById(R.id.btn_pledit);
+        final ImageButton btn_delete = (ImageButton) findViewById(R.id.btn_pldelete);
+        final ImageButton btn_cancel = (ImageButton) findViewById(R.id.btn_plcancel);
+        btn_cancel.setVisibility(View.GONE);
 
         //Adapter
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
@@ -60,7 +63,7 @@ public class Playlist extends Activity {
             public void onClick(View v) {
                 //Dialog and Layout
                 AlertDialog.Builder builder = new AlertDialog.Builder(Playlist.this);
-                builder.setTitle("Set Playlist Name");
+                builder.setTitle("New Playlist Name");
 
                 //Input Field on Dialog
                 final EditText input = new EditText(Playlist.this);
@@ -88,34 +91,68 @@ public class Playlist extends Activity {
             }
         });
 
+        //Edit Item on Playlist
         btn_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mode = 2;
+                btn_cancel.setVisibility(View.VISIBLE);
             }
         });
 
+        //Delete Item on Playlist
         btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mode = 1;
+                btn_cancel.setVisibility(View.VISIBLE);
             }
         });
 
-        //Remove Item from Playlist
+        //Cancel Edit or Delete
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mode = 0;
+                btn_cancel.setVisibility(View.GONE);
+            }
+        });
+
+        //Mode
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Edit Item on Playlist
                 if (mode == 1) {
-                    //Remove Item and Save Playlist
-                    playlist.remove(position);
-                    savePlaylist();
-                    arrayAdapter.notifyDataSetChanged();
+                    //Dialog and Layout
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Playlist.this);
+                    builder.setTitle("Delete Confirmation");
+                    final int pos = position;
+
+                    builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //Remove Item, Save Playlist and Show Changes
+                            playlist.remove(pos);
+                            savePlaylist();
+                            arrayAdapter.notifyDataSetChanged();
+
+                            Toast.makeText(getApplicationContext(), "Playlist Deleted", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    builder.show();
                 }
+                //Delete Item on Playlist
                 else if (mode == 2) {
                     //Dialog and Layout
                     AlertDialog.Builder builder = new AlertDialog.Builder(Playlist.this);
-                    builder.setTitle("New Playlist Name");
+                    builder.setTitle("Set Playlist Name");
                     final int pos = position;
 
                     //Input Field on Dialog
@@ -127,11 +164,13 @@ public class Playlist extends Activity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             //Add item to Playlist
-                            playlist.set(pos, input.getText().toString());
+                            String playlistname = input.getText().toString();
+                            playlist.set(pos, playlistname);
 
                             //Save Playlist
                             savePlaylist();
                             arrayAdapter.notifyDataSetChanged();
+                            Toast.makeText(getApplicationContext(), playlistname + " Edited", Toast.LENGTH_SHORT).show();
                         }
                     });
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -141,6 +180,7 @@ public class Playlist extends Activity {
                         }
                     });
                     builder.show();
+                    mode = 0;
                 }
             }
         });
