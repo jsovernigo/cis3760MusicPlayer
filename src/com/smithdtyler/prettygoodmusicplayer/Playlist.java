@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,12 +19,18 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 public class Playlist extends Activity {
+    //ArrayList
     private ArrayList<String> playlist;
+
+    //Mode (1 - Delete, 2 - Edit)
+    private int mode = 0;
+
     private ListView lv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         playlist = new ArrayList<>();
+        mode = 0;
         loadPlaylist(getApplicationContext());
 
         super.onCreate(savedInstanceState);
@@ -34,13 +41,11 @@ public class Playlist extends Activity {
 
         //Buttons
         ImageButton btn_add = (ImageButton) findViewById(R.id.btn_pladd);
-        //ImageButton btn_edit = (ImageButton) findViewById(R.id.btn_pledit);
-        //ImageButton btn_delete = (ImageButton) findViewById(R.id.btn_pldelete);
+        ImageButton btn_edit = (ImageButton) findViewById(R.id.btn_pledit);
+        ImageButton btn_delete = (ImageButton) findViewById(R.id.btn_pldelete);
 
-        // This is the array adapter, it takes the context of the activity as a
-        // first parameter, the type of list view as a second parameter and your
-        // array as a third parameter.
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+        //Adapter
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 this, android.R.layout.simple_list_item_1, playlist);
 
         lv.setAdapter(arrayAdapter);
@@ -79,8 +84,26 @@ public class Playlist extends Activity {
                         dialog.cancel();
                     }
                 });
-
                 builder.show();
+            }
+        });
+
+        btn_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mode = 1;
+            }
+        });
+
+        //Remove Item from Playlist
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (mode == 1) {
+                    playlist.remove(position);
+                    savePlaylist();
+                    arrayAdapter.notifyDataSetChanged();
+                }
             }
         });
     }
