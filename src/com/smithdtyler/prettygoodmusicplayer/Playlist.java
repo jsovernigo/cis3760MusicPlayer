@@ -60,7 +60,7 @@ public class Playlist extends Activity {
             public void onClick(View v) {
                 //Dialog and Layout
                 AlertDialog.Builder builder = new AlertDialog.Builder(Playlist.this);
-                builder.setTitle("playlist name");
+                builder.setTitle("Set Playlist Name");
 
                 //Input Field on Dialog
                 final EditText input = new EditText(Playlist.this);
@@ -88,6 +88,13 @@ public class Playlist extends Activity {
             }
         });
 
+        btn_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mode = 2;
+            }
+        });
+
         btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,9 +107,40 @@ public class Playlist extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (mode == 1) {
+                    //Remove Item and Save Playlist
                     playlist.remove(position);
                     savePlaylist();
                     arrayAdapter.notifyDataSetChanged();
+                }
+                else if (mode == 2) {
+                    //Dialog and Layout
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Playlist.this);
+                    builder.setTitle("New Playlist Name");
+                    final int pos = position;
+
+                    //Input Field on Dialog
+                    final EditText input = new EditText(Playlist.this);
+                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);
+                    builder.setView(input);
+
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //Add item to Playlist
+                            playlist.set(pos, input.getText().toString());
+
+                            //Save Playlist
+                            savePlaylist();
+                            arrayAdapter.notifyDataSetChanged();
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    builder.show();
                 }
             }
         });
