@@ -26,27 +26,23 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class AlbumList extends AbstractMusicList {
 	public static final String ALBUM_NAME = "ALBUM_NAME";
 	public static final String ALBUM_PATH = "ALBUM_PATH";
 
 	private static final String TAG = "AlbumList";
-	private List<Map<String,String>> albums;
-	private BaseAdapter listAdapter;
+	private List<String> albums;
+    private ArrayAdapter<String> albumArrayAdapter;
 
 	private String currentTheme;
 	private String currentSize;
@@ -59,7 +55,7 @@ public class AlbumList extends AbstractMusicList {
 	 * @param artistPath
 	 */
 	private void populateAlbums(String artistName, String artistPath){
-		albums = new ArrayList<Map<String,String>>();
+		albums = new ArrayList<String>();
 		
 		File artist = new File(artistPath);
 		Log.d(TAG, "storage directory = " + artist);
@@ -97,9 +93,7 @@ public class AlbumList extends AbstractMusicList {
 		for(File albumFile : albumFiles){
 			String album = albumFile.getName();
 			Log.v(TAG, "Adding album " + album);
-			Map<String,String> map = new HashMap<String, String>();
-			map.put("album", album);			
-			albums.add(map);
+            albums.add(album);
 		}
 		
 		// If albums size is 1, then there were no directories in this folder.
@@ -162,9 +156,9 @@ public class AlbumList extends AbstractMusicList {
 	    final String artistPath = intent.getStringExtra(ArtistList.ARTIST_ABS_PATH_NAME);
 	    populateAlbums(artist, artistPath);
         
-        listAdapter = new SimpleAdapter(this, albums, R.layout.pgmp_list_item, new String[] {"album"}, new int[] {R.id.PGMPListItemText});
-	    ListView lv = (ListView) findViewById(R.id.albumListView);
-        lv.setAdapter(listAdapter);
+        albumArrayAdapter = new ArrayAdapter<String>(this, R.layout.pgmp_list_item, R.id.PGMPListItemText, albums);
+        ListView lv = (ListView) findViewById(R.id.albumListView);
+        lv.setAdapter(albumArrayAdapter);
         
         // React to user clicks on item
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {

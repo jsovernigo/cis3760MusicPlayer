@@ -12,11 +12,10 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import java.io.File;
-import java.util.Arrays;
 
 /**
  * Created by julian on 28/02/18.
@@ -32,7 +31,7 @@ public class Search extends Activity {
 	private static String baseDir;
 
 
-	private SimpleAdapter simpleAdpt;
+	private ArrayAdapter searchArrayAdapter;
 	private String currentTheme;
 	private String currentSize;
 	private boolean hasResume = false;
@@ -160,9 +159,9 @@ public class Search extends Activity {
         }
 
 
-        simpleAdpt = new SimpleAdapter(this, listOfSongs.transformToListViewCompat(), R.layout.pgmp_list_item, new String[] {"song"}, new int[] {R.id.PGMPListItemText});
-        ListView lv = (ListView) findViewById(R.id.songListView);
-        lv.setAdapter(simpleAdpt);
+		searchArrayAdapter = new ArrayAdapter<String>(this, R.layout.pgmp_list_item, R.id.PGMPListItemText, listOfSongs.transformToArrayAdapter());
+		ListView lv = (ListView) findViewById(R.id.songListView);
+		lv.setAdapter(searchArrayAdapter);
 
         // React to user clicks on item
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {

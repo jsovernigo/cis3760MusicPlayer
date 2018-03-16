@@ -38,6 +38,16 @@ public class Songs {
         return export;
     }
 
+    public List<String> transformToArrayAdapter() {
+        List<String> export;
+        export = new ArrayList<String>();
+        for (Song s : this.songList) {
+            export.add(s.getSongName());
+        }
+
+        return export;
+    }
+
     /**
      * @author Julian Sovernigo
      * @return the size of the list of songs.
