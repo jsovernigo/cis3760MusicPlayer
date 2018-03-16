@@ -28,23 +28,21 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class SongList extends AbstractMusicList {
 	public static final String SONG_ABS_FILE_NAME_LIST = "SONG_LIST";
 	public static final String SONG_ABS_FILE_NAME_LIST_POSITION = "SONG_LIST_POSITION";
 	private static final String TAG = "SongList";
-	private List<Map<String,String>> songs;
-	private SimpleAdapter simpleAdpt;
+	private List<String> songs;
+	private ArrayAdapter<String> songArrayAdapter;
 	private List<String> songAbsFileNameList;
 	private String currentTheme;
 	private String currentSize;
@@ -58,7 +56,7 @@ public class SongList extends AbstractMusicList {
 
 	private void populateSongs(String artistName, String albumDirName, String albumPath, String artistAbsDirName){
 		
-		songs = new ArrayList<Map<String,String>>();
+		songs = new ArrayList<String>();
 		
 		File artistDir = new File(artistAbsDirName);
 		if(albumDirName != null && albumPath != null){
@@ -140,9 +138,7 @@ public class SongList extends AbstractMusicList {
 		
 		for(File song : songFiles){
 			Log.v(TAG, "Adding song " + song);
-			Map<String,String> map = new HashMap<String, String>();
-			map.put("song", Utils.getPrettySongName(song));			
-			songs.add(map);
+			songs.add(Utils.getPrettySongName(song));
 		}
 		
 		// If there is a value set to resume to, and audiobook mode is enabled
@@ -160,9 +156,7 @@ public class SongList extends AbstractMusicList {
 					int minutes = prog / (1000 * 60);
 					int seconds = (prog % (1000 * 60)) / 1000;
 					String time = String.format(Locale.getDefault(), "%d:%02d", minutes, seconds);
-					Map<String, String> map = new HashMap<String, String>();
-					map.put("song", getResources().getString(R.string.resume) + ": " + resumeSongName + " (" + time + ")");
-					songs.add(0, map);
+					songs.add(0, getResources().getString(R.string.resume) + ": " + resumeSongName + " (" + time + ")");
 					// loop over the available songs, make sure we still have it
 					for(int i = 0; i< songFiles.size(); i++){
 						File song = songFiles.get(i);
@@ -239,9 +233,9 @@ public class SongList extends AbstractMusicList {
 	    
 	    populateSongs(artistName, album, albumPath, artistDir);
 	    
-        simpleAdpt = new SimpleAdapter(this, songs, R.layout.pgmp_list_item, new String[] {"song"}, new int[] {R.id.PGMPListItemText});
+        songArrayAdapter = new ArrayAdapter<String>(this, R.layout.pgmp_list_item, R.id.PGMPListItemText, songs);
         ListView lv = (ListView) findViewById(R.id.songListView);
-        lv.setAdapter(simpleAdpt);
+        lv.setAdapter(songArrayAdapter);
         
         // React to user clicks on item
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {

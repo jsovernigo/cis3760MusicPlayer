@@ -34,16 +34,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @SuppressLint("DefaultLocale") public class ArtistList extends AbstractMusicList {
 	private static final String TAG = "Artist List";
@@ -53,17 +50,14 @@ import java.util.Map;
 	
 	private static final String PICK_DIR_TEXT = "Click to configure...";
 
-	private List<Map<String,String>> artists;
-	private List<String> temp_artists;
-	private SimpleAdapter simpleAdpt;
-	private ArrayAdapter<String> tempArrayAdapter;
+	private List<String> artists;
+	private ArrayAdapter<String> artistArrayAdapter;
     private String baseDir;
 	private Object currentTheme;
 	private String currentSize;
 
 	private void populateArtists(String baseDir){
-		artists = new ArrayList<Map<String,String>>();
-		temp_artists = new ArrayList<String>();
+		artists = new ArrayList<String>();
 		File f = new File(baseDir);
 		if(!f.exists() || !f.isDirectory()){
 			Log.e(TAG, "Storage directory " + f + " does not exist!");
@@ -71,7 +65,7 @@ import java.util.Map;
 		}
 
         /*SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
-		Uri mSaveTreeUri = Uri.parse(prefs.getString("ARTIST_DIRECTORY", ""));
+		Uri mSaveTreeUri = Uri.parse(prefs.getString(ARTISTS_DIR, ""));
         DocumentFile pickedDir_test = DocumentFile.fromTreeUri(this, mSaveTreeUri);*/
 		
 		List<String> artistDirs = new ArrayList<String>();
@@ -107,19 +101,12 @@ import java.util.Map;
 
 			for (String artist : artistDirs) {
 				Log.v(TAG, "Adding artist " + artist);
-				// listview requires a map
-				Map<String, String> map = new HashMap<String, String>();
-				map.put("artist", artist);
-				artists.add(map);
-				temp_artists.add(artist);
+				artists.add(artist);
 			}
 		}
 
 		if(!f.exists() || artistDirs.isEmpty()){
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("artist", PICK_DIR_TEXT);
-			artists.add(map);
-			temp_artists.add(PICK_DIR_TEXT);
+			artists.add(PICK_DIR_TEXT);
 		}
 	}
 	
@@ -129,16 +116,14 @@ import java.util.Map;
         SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
         prefs.edit();
         File bestGuessMusicDir = Utils.getBestGuessMusicDirectory();
-        String prefDir = prefs.getString("ARTIST_DIRECTORY", bestGuessMusicDir.getAbsolutePath());
+        String prefDir = prefs.getString(ARTISTS_DIR, bestGuessMusicDir.getAbsolutePath());
         ListView lv = (ListView) findViewById(R.id.artistListView);
         if(!prefDir.equals(baseDir)){
         	baseDir = prefDir;
         	populateArtists(baseDir);
             
-            //simpleAdpt = new SimpleAdapter(this, artists,  R.layout.pgmp_list_item, new String[] {"artist"}, new int[] {R.id.PGMPListItemText});
-            //lv.setAdapter(simpleAdpt);
-            tempArrayAdapter = new ArrayAdapter<String>(this, R.layout.pgmp_list_item, R.id.PGMPListItemText, temp_artists);
-            lv.setAdapter(tempArrayAdapter);
+            artistArrayAdapter = new ArrayAdapter<String>(this, R.layout.pgmp_list_item, R.id.PGMPListItemText, artists);
+            lv.setAdapter(artistArrayAdapter);
         }
         
         int top = prefs.getInt("ARTIST_LIST_TOP", Integer.MIN_VALUE);
@@ -186,16 +171,14 @@ import java.util.Map;
 		super.onStart();
         SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
         Log.i(TAG, "Preferences " + prefs + " " + ((Object)prefs));
-        baseDir = prefs.getString("ARTIST_DIRECTORY", new File(Environment.getExternalStorageDirectory(), "Music").getAbsolutePath());
+        baseDir = prefs.getString(ARTISTS_DIR, new File(Environment.getExternalStorageDirectory(), "Music").getAbsolutePath());
         Log.d(TAG, "Got configured base directory of " + baseDir);
 
         populateArtists(baseDir);
         
-        //simpleAdpt = new SimpleAdapter(this, artists, R.layout.pgmp_list_item, new String[] {"artist"}, new int[] {R.id.PGMPListItemText});
-        tempArrayAdapter = new ArrayAdapter<String>(this, R.layout.pgmp_list_item, R.id.PGMPListItemText, temp_artists);
+        artistArrayAdapter = new ArrayAdapter<String>(this, R.layout.pgmp_list_item, R.id.PGMPListItemText, artists);
         ListView lv = (ListView) findViewById(R.id.artistListView);
-        //lv.setAdapter(simpleAdpt);
-        lv.setAdapter(tempArrayAdapter);
+        lv.setAdapter(artistArrayAdapter);
     }
 
 	@Override
