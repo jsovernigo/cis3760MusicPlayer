@@ -1,10 +1,16 @@
 package com.smithdtyler.prettygoodmusicplayer;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.InputType;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -15,14 +21,49 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 public class Playlist extends Activity {
+    private static final String TAG = "Playlist";
     private ArrayList<String> playlist;
     private ListView lv;
+
+    private String currentTheme;
+    private String currentSize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         playlist = new ArrayList<>();
 
         super.onCreate(savedInstanceState);
+
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String theme = sharedPref.getString("pref_theme", getString(R.string.light));
+        String size = sharedPref.getString("pref_text_size", getString(R.string.medium));
+        Log.i(TAG, "got configured theme " + theme);
+        Log.i(TAG, "got configured size " + size);
+        currentTheme = theme;
+        currentSize = size;
+
+        if(theme.equalsIgnoreCase(getString(R.string.dark)) || theme.equalsIgnoreCase("dark")){
+            Log.i(TAG, "setting theme to " + theme);
+            if(size.equalsIgnoreCase(getString(R.string.small)) || size.equalsIgnoreCase("small")){
+                setTheme(R.style.PGMPDarkSmall);
+            } else if (size.equalsIgnoreCase(getString(R.string.medium)) || size.equalsIgnoreCase("medium")){
+                setTheme(R.style.PGMPDarkMedium);
+            } else {
+                setTheme(R.style.PGMPDarkLarge);
+            }
+        } else if (theme.equalsIgnoreCase(getString(R.string.light)) || theme.equalsIgnoreCase("light")){
+            Log.i(TAG, "setting theme to " + theme);
+            if(size.equalsIgnoreCase(getString(R.string.small)) || size.equalsIgnoreCase("small")){
+                setTheme(R.style.PGMPLightSmall);
+            } else if (size.equalsIgnoreCase(getString(R.string.medium)) || size.equalsIgnoreCase("medium")){
+                setTheme(R.style.PGMPLightMedium);
+            } else {
+                setTheme(R.style.PGMPLightLarge);
+            }
+        }
+
         setContentView(R.layout.activity_playlist);
 
         //List
@@ -76,4 +117,18 @@ public class Playlist extends Activity {
             }
         });
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if(id == android.R.id.home){
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
+

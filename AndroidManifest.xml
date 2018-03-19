@@ -56,6 +56,9 @@
         <activity
             android:name=".Search"
             android:label="Search"></activity>
+        <activity
+            android:name=".Playlist"
+            android:label="Playlist"></activity>
         <!--
         The service has android:exported="true" because that's needed for
         control from the notification. Not sure why it causes a warning...
@@ -72,8 +75,6 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
-
-        <activity android:name=".Playlist"></activity>
     </application>
 
 </manifest>
