@@ -14,8 +14,7 @@ import java.io.*;
 
 
 public class Songs {
-    private List<Song> songList;
-    private String playlistName;
+    protected List<Song> songList;
 
     public Songs(){
         songList = new ArrayList<Song>();
@@ -25,18 +24,7 @@ public class Songs {
         songList = new ArrayList<Song>();
         playlistName = name;
     }*/
-
-    public Songs(String pLine){
-        songList = new ArrayList<Song>();
-        String[] nameSplit  = pLine.split(":");
-        playlistName = nameSplit[0];
-
-        String[] songFiles = nameSplit[1].split(",");
-
-        for(String songPath : songFiles){
-            songList.add(new Song(songPath));
-        }
-    }
+    
 
     public void addSong(Song s){
         songList.add(s);
@@ -140,17 +128,6 @@ public class Songs {
         }
     }
 
-    public String toString(){
-        String out = playlistName;
-        out = out + ":";
 
-        for(Song s : this.songList){
-            out = out + s.getFilePath() + ",";
-        }
-
-        out = out + "\n";
-
-        return out;
-    }
 
 }
