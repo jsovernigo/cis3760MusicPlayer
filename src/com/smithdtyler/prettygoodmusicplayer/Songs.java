@@ -131,4 +131,26 @@ public class Songs {
         }
         return songs;
     }
+
+    public void removeSongByName(String name){
+        for(Song s : this.songList){
+            if(s.getSongName().equals(name)){
+                songList.remove(s);
+            }
+        }
+    }
+
+    public String toString(){
+        String out = playlistName;
+        out = out + ":";
+
+        for(Song s : this.songList){
+            out = out + s.getFilePath() + ",";
+        }
+
+        out = out + "\n";
+
+        return out;
+    }
+
 }
