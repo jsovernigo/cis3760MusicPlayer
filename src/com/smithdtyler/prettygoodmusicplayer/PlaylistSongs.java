@@ -8,7 +8,10 @@ import java.util.ArrayList;
 
 public class PlaylistSongs extends Songs {
     private String playlistName;
-
+    /**
+     * @author Liam Ewasko
+     * @param pLine the line representation of a playlist format PLAYLIST_NAME:"/some/file/here.file",...,
+     */
     public PlaylistSongs(String pLine){
         super();
         //songList = new ArrayList<Song>(); called in the super
@@ -21,7 +24,10 @@ public class PlaylistSongs extends Songs {
             songList.add(new Song(songPath));
         }
     }
-
+    /**
+     * @author Liam Ewasko
+     * @return the line representation of a playlist PLAYLIST_NAME:"/some/file/here/",...,
+     */
     public String toString(){
         String out = playlistName;
         out = out + ":";
