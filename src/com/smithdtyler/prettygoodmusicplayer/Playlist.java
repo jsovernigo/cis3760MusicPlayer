@@ -1,54 +1,83 @@
 package com.smithdtyler.prettygoodmusicplayer;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.InputType;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class Playlist extends Activity {
-    //ArrayList
+    private static final String TAG = "Playlist";
     private ArrayList<String> playlist;
-
-    //Mode (1 - Delete, 2 - Edit)
-    private int mode = 0;
-
     private ListView lv;
+
+    private String currentTheme;
+    private String currentSize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         playlist = new ArrayList<>();
-        mode = 0;
-        loadPlaylist(getApplicationContext());
 
         super.onCreate(savedInstanceState);
+
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String theme = sharedPref.getString("pref_theme", getString(R.string.light));
+        String size = sharedPref.getString("pref_text_size", getString(R.string.medium));
+        Log.i(TAG, "got configured theme " + theme);
+        Log.i(TAG, "got configured size " + size);
+        currentTheme = theme;
+        currentSize = size;
+
+        if(theme.equalsIgnoreCase(getString(R.string.dark)) || theme.equalsIgnoreCase("dark")){
+            Log.i(TAG, "setting theme to " + theme);
+            if(size.equalsIgnoreCase(getString(R.string.small)) || size.equalsIgnoreCase("small")){
+                setTheme(R.style.PGMPDarkSmall);
+            } else if (size.equalsIgnoreCase(getString(R.string.medium)) || size.equalsIgnoreCase("medium")){
+                setTheme(R.style.PGMPDarkMedium);
+            } else {
+                setTheme(R.style.PGMPDarkLarge);
+            }
+        } else if (theme.equalsIgnoreCase(getString(R.string.light)) || theme.equalsIgnoreCase("light")){
+            Log.i(TAG, "setting theme to " + theme);
+            if(size.equalsIgnoreCase(getString(R.string.small)) || size.equalsIgnoreCase("small")){
+                setTheme(R.style.PGMPLightSmall);
+            } else if (size.equalsIgnoreCase(getString(R.string.medium)) || size.equalsIgnoreCase("medium")){
+                setTheme(R.style.PGMPLightMedium);
+            } else {
+                setTheme(R.style.PGMPLightLarge);
+            }
+        }
+
         setContentView(R.layout.activity_playlist);
 
         //List
         lv = (ListView) findViewById(R.id.playlistListView);
 
         //Buttons
-        final ImageButton btn_add = (ImageButton) findViewById(R.id.btn_pladd);
-        final ImageButton btn_edit = (ImageButton) findViewById(R.id.btn_pledit);
-        final ImageButton btn_delete = (ImageButton) findViewById(R.id.btn_pldelete);
-        final ImageButton btn_cancel = (ImageButton) findViewById(R.id.btn_plcancel);
-        btn_cancel.setVisibility(View.GONE);
+        ImageButton btn_add = (ImageButton) findViewById(R.id.btn_pladd);
+        //ImageButton btn_edit = (ImageButton) findViewById(R.id.btn_pledit);
+        //ImageButton btn_delete = (ImageButton) findViewById(R.id.btn_pldelete);
 
-        //Adapter
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+        // This is the array adapter, it takes the context of the activity as a
+        // first parameter, the type of list view as a second parameter and your
+        // array as a third parameter.
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 this, android.R.layout.simple_list_item_1, playlist);
 
         lv.setAdapter(arrayAdapter);
@@ -63,7 +92,7 @@ public class Playlist extends Activity {
             public void onClick(View v) {
                 //Dialog and Layout
                 AlertDialog.Builder builder = new AlertDialog.Builder(Playlist.this);
-                builder.setTitle("New Playlist Name");
+                builder.setTitle("playlist name");
 
                 //Input Field on Dialog
                 final EditText input = new EditText(Playlist.this);
@@ -73,12 +102,8 @@ public class Playlist extends Activity {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //Add item to Playlist
                         playlistname = input.getText().toString();
                         playlist.add(playlistname);
-
-                        //Save Playlist
-                        savePlaylist();
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -87,125 +112,23 @@ public class Playlist extends Activity {
                         dialog.cancel();
                     }
                 });
+
                 builder.show();
             }
         });
-
-        //Edit Item on Playlist
-        btn_edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mode = 2;
-                btn_cancel.setVisibility(View.VISIBLE);
-            }
-        });
-
-        //Delete Item on Playlist
-        btn_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mode = 1;
-                btn_cancel.setVisibility(View.VISIBLE);
-            }
-        });
-
-        //Cancel Edit or Delete
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mode = 0;
-                btn_cancel.setVisibility(View.GONE);
-            }
-        });
-
-        //Mode
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Edit Item on Playlist
-                if (mode == 1) {
-                    //Dialog and Layout
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Playlist.this);
-                    builder.setTitle("Delete Confirmation");
-                    final int pos = position;
-
-                    builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            //Remove Item, Save Playlist and Show Changes
-                            playlist.remove(pos);
-                            savePlaylist();
-                            arrayAdapter.notifyDataSetChanged();
-
-                            Toast.makeText(getApplicationContext(), "Playlist Deleted", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-                    builder.show();
-                }
-                //Delete Item on Playlist
-                else if (mode == 2) {
-                    //Dialog and Layout
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Playlist.this);
-                    builder.setTitle("Set Playlist Name");
-                    final int pos = position;
-
-                    //Input Field on Dialog
-                    final EditText input = new EditText(Playlist.this);
-                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);
-                    builder.setView(input);
-
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            //Add item to Playlist
-                            String playlistname = input.getText().toString();
-                            playlist.set(pos, playlistname);
-
-                            //Save Playlist
-                            savePlaylist();
-                            arrayAdapter.notifyDataSetChanged();
-                            Toast.makeText(getApplicationContext(), playlistname + " Edited", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-                    builder.show();
-                    mode = 0;
-                }
-            }
-        });
     }
 
-    private void savePlaylist() {
-        SharedPreferences savesharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = savesharedPref.edit();
-        editor.putInt("playlist_size", playlist.size());
-
-        for (int i = 0; i < playlist.size(); i = i + 1) {
-            editor.remove("playlist" + i);
-            editor.putString("playlist" + i, playlist.get(i));
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if(id == android.R.id.home){
+            onBackPressed();
+            return true;
         }
-
-        editor.commit();
-    }
-
-    private void loadPlaylist(Context context) {
-        SharedPreferences loadsharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        int size = loadsharedPref.getInt("playlist_size", 0);
-        playlist.clear();
-
-        for (int i = 0; i < size; i = i + 1) {
-            playlist.add(loadsharedPref.getString("playlist" + i,null));
-        }
+        return super.onOptionsItemSelected(item);
     }
 }
+
