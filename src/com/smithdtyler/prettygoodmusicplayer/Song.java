@@ -24,6 +24,9 @@ public class Song {
 
     public Song(String fileName){
         file = fileName;
+        File f = new File(fileName);
+        name = Utils.getPrettySongName(f);
+      //  artist = Utils.getArtistName(f,) FIGURE OUT HOW TO GET OTHER INFO
 
     }
 
