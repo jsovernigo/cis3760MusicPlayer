@@ -22,6 +22,11 @@ public class Song {
         file = fileName;
     }
 
+    public Song(String fileName){
+        file = fileName;
+
+    }
+
     public String getSongName(){return name;}
     public String getArtist(){return artist;}
     public String getAlbum(){return album;}
