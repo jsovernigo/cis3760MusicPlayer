@@ -23,12 +23,10 @@ public class Homepage extends Activity {
         setContentView(R.layout.activity_homepage);
 
         //Buttons
-        //ImageButton btn_browse = (ImageButton) findViewById(R.id.btn_browse);
-        //ImageButton btn_search = (ImageButton) findViewById(R.id.btn_search);
         Button btn_browse = (Button) findViewById(R.id.btn_browse);
         Button btn_search = (Button) findViewById(R.id.btn_search);
-        ImageButton btn_playlists = (ImageButton) findViewById(R.id.btn_playlists);
-        ImageButton btn_settings = (ImageButton) findViewById(R.id.btn_settings);
+        Button btn_playlists = (Button) findViewById(R.id.btn_playlists);
+        Button btn_settings = (Button) findViewById(R.id.btn_settings);
 
         //Move to Home
         btn_browse.setOnClickListener(new View.OnClickListener(){
