@@ -5,6 +5,8 @@ package com.smithdtyler.prettygoodmusicplayer;
  */
 
 import java.util.*;
+import java.io.*;
+
 
 /*
     Better Song list prototype
@@ -13,9 +15,27 @@ import java.util.*;
 
 public class Songs {
     private List<Song> songList;
+    private String playlistName;
 
     public Songs(){
         songList = new ArrayList<Song>();
+    }
+    /*
+    public Songs(String name){
+        songList = new ArrayList<Song>();
+        playlistName = name;
+    }*/
+
+    public Songs(String pLine){
+        songList = new ArrayList<Song>();
+        String[] nameSplit  = pLine.split(":");
+        playlistName = nameSplit[0];
+
+        String[] songFiles = nameSplit[1].split(",");
+
+        for(String songPath : songFiles){
+            songList.add(new Song(songPath));
+        }
     }
 
     public void addSong(Song s){
@@ -121,4 +141,26 @@ public class Songs {
         }
         return songs;
     }
+
+    public void removeSongByName(String name){
+        for(Song s : this.songList){
+            if(s.getSongName().equals(name)){
+                songList.remove(s);
+            }
+        }
+    }
+
+    public String toString(){
+        String out = playlistName;
+        out = out + ":";
+
+        for(Song s : this.songList){
+            out = out + s.getFilePath() + ",";
+        }
+
+        out = out + "\n";
+
+        return out;
+    }
+
 }
