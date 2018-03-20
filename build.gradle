@@ -3,17 +3,18 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:2.3.2'
     }
 }
 apply plugin: 'android'
 
 dependencies {
-    compile fileTree(include: '*.jar', dir: 'libs-gradle')
+    compile fileTree(dir: 'libs-gradle', include: '*.jar')
 }
 
 android {
     compileSdkVersion 23
+    buildToolsVersion '25.0.0'
 
 
     sourceSets {
@@ -55,8 +56,4 @@ dependencies {
 dependencies {
     compile 'com.android.support:appcompat-v7:23.+'
     compile 'com.android.support.constraint:constraint-layout:+'
-}
-dependencies {
-    compile 'com.android.support.constraint:constraint-layout:+'
-    compile 'com.android.support:design:23.0.1'
 }
