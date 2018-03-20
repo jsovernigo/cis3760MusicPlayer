@@ -14,30 +14,20 @@ import java.io.*;
 
 
 public class Songs {
-    private List<Song> songList;
-    private String playlistName;
+    protected List<Song> songList;
 
+    /**
+     * @author Liam Ewasko
+     */
     public Songs(){
         songList = new ArrayList<Song>();
     }
-    /*
-    public Songs(String name){
-        songList = new ArrayList<Song>();
-        playlistName = name;
-    }*/
 
-    public Songs(String pLine){
-        songList = new ArrayList<Song>();
-        String[] nameSplit  = pLine.split(":");
-        playlistName = nameSplit[0];
 
-        String[] songFiles = nameSplit[1].split(",");
-
-        for(String songPath : songFiles){
-            songList.add(new Song(songPath));
-        }
-    }
-
+    /**
+     * @author Liam Ewasko
+     * @param s song to add to list
+     */
     public void addSong(Song s){
         songList.add(s);
     }
@@ -97,6 +87,12 @@ public class Songs {
         return paths;
     }
 
+
+    /**
+     * @author Liam Ewasko
+     * @return a list of Songs with the same artist.
+     * @param artist a string containing the name of the artist to find
+     */
     public List<Song> getSongsByArtist(String artist){
         List<Song> songs = new ArrayList<Song>();
 
@@ -107,7 +103,11 @@ public class Songs {
 
         return songs;
     }
-
+    /**
+     * @author Liam Ewasko
+     * @return a list of Songs from the same album
+     * @param album a string containing the name of the album
+     */
     public List<Song> getSongsByAlbum(String album){
         List<Song> songs = new ArrayList<Song>();
 
@@ -118,7 +118,11 @@ public class Songs {
 
         return songs;
     }
-
+    /**
+     * @author Liam Ewasko
+     * @return a list of Songs which have names containing the parameter name
+     * @param name the name keyword to search for
+     */
     public List<Song> searchSongs(String name){
         List<Song> songs = new ArrayList<Song>();
         Collections.sort(songs,new Song.SongNameComparator());
@@ -141,7 +145,10 @@ public class Songs {
         }
         return songs;
     }
-
+    /**
+     * @author Liam Ewasko
+     * @param name the name of the song to remove from the list
+     */
     public void removeSongByName(String name){
         for(Song s : this.songList){
             if(s.getSongName().equals(name)){
@@ -150,17 +157,6 @@ public class Songs {
         }
     }
 
-    public String toString(){
-        String out = playlistName;
-        out = out + ":";
 
-        for(Song s : this.songList){
-            out = out + s.getFilePath() + ",";
-        }
-
-        out = out + "\n";
-
-        return out;
-    }
 
 }

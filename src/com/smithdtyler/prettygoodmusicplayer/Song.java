@@ -14,14 +14,23 @@ public class Song {
     private String album;
     private String file;
 
-
+    /**
+     * @author Liam Ewasko
+     * @param songName the name of the song
+     * @param artistName the name of the artist of the song
+     * @param albumName the name of the album the song belongs to
+     * @param fileName the file name of the song
+     */
     public Song(String songName,String artistName,String albumName,String fileName){
         name = songName;
         artist = artistName;
         album = albumName;
         file = fileName;
     }
-
+    /**
+     * @author Liam Ewasko
+     * @param fileName the file name of the song
+     */
     public Song(String fileName){
         file = fileName;
         File f = new File(fileName);
@@ -88,21 +97,30 @@ public class Song {
         return f.getParentFile().getAbsolutePath();
     }
 
-
+    /**
+     * @author Liam Ewasko
+     * A song name comparator class
+     */
     public static class SongNameComparator implements Comparator<Song> {
         @Override
         public int compare(final Song s1,final Song s2){
             return s1.getSongName().compareTo(s2.getSongName());
         }
     }
-
+    /**
+     * @author Liam Ewasko
+     * A song artist comparator class (compares by artist name)
+     */
     public static class ArtistNameComparator implements Comparator<Song>{
         @Override
         public int compare(final Song s1,final Song s2){
             return s1.getArtist().compareTo(s2.getArtist());
         }
     }
-
+    /**
+     * @author Liam Ewasko
+     * A song album name comparator class (compares by album name)
+     */
     public static class AlbumNameComparator implements Comparator<Song>{
         @Override
         public int compare(final Song s1,final Song s2){
