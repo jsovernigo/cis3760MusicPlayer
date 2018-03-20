@@ -45,6 +45,15 @@ public class Homepage extends Activity {
             }
         });
 
+        //Move to Playlists
+        btn_playlists.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Homepage.this, Playlist.class);
+                startActivity(i);
+            }
+        });
+
 
         btn_search.setOnClickListener(new View.OnClickListener() {
 
