@@ -36,7 +36,7 @@ public class PlaylistSongs extends Songs {
             out = out + s.getFilePath() + ",";
         }
 
-        out = out + "\n";
+        //out = out + "\n"; removed for you Julian <3
 
         return out;
     }
