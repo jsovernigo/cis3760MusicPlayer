@@ -6,19 +6,68 @@
     android:layout_height="match_parent"
     tools:context="com.smithdtyler.prettygoodmusicplayer.Homepage">
 
-    <ImageButton
+    <!--ImageButton
         android:id="@+id/btn_browse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="8dp"
         android:background="@android:color/transparent"
-        android:contentDescription="@string/btn_browse"
-        android:src="@drawable/button_browse"
+        android:contentDescription="@string/btn_playlist"
+        android:src="@drawable/button_playlists"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+        android:id="@+id/btn_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/btn_search"
+        android:src="@drawable/button_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_browse" /> -->
+    <Button
+        android:id="@+id/btn_browse"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="75dp"
+        android:layout_marginStart="75dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/button_style"
+        android:text="Browse"
+        android:paddingLeft="60dp"
+        android:paddingRight="60dp"
+        android:contentDescription="@string/btn_browse"
+        android:drawableLeft="@drawable/ic_folder_white_24px"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_search"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="75dp"
+        android:layout_marginStart="75dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/button_style"
+        android:text="Search"
+        android:paddingLeft="60dp"
+        android:paddingRight="60dp"
+        android:contentDescription="@string/btn_search"
+        android:drawableLeft="@drawable/ic_action_search"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_browse" />
 
     <ImageButton
         android:id="@+id/btn_playlists"
@@ -47,18 +96,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_playlists" />
-
-    <ImageButton
-        android:id="@+id/btn_search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/btn_search"
-        android:src="@drawable/button_search"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_browse" />
 </android.support.constraint.ConstraintLayout>

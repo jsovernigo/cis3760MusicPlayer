@@ -109,11 +109,14 @@ public class SettingsActivity extends PreferenceActivity {
 		Log.i(TAG, "User clicked " + preference.getTitle());
 		if (preference.getKey().equals("choose_music_directory_prompt")) {
 			final File path = Utils.getRootStorageDirectory();
+
 			DirectoryPickerOnClickListener picker = new DirectoryPickerOnClickListener(
 					this, path);
 			picker.showDirectoryPicker();
 			Log.i(TAG, "User selected " + picker.path);
+
             //performFileSearch();
+
 			return true;
 		}
 		return super.onPreferenceTreeClick(preferenceScreen, preference);
@@ -214,7 +217,7 @@ public class SettingsActivity extends PreferenceActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         if (resultCode == RESULT_OK) {
             Uri treeUri = resultData.getData();
-            DocumentFile pickedDir = DocumentFile.fromTreeUri(this, treeUri);
+            //DocumentFile pickedDir = DocumentFile.fromTreeUri(this, treeUri);
 
             String fullPath = treeUri.getPath();
             String[] split = fullPath.split(":");
@@ -224,10 +227,8 @@ public class SettingsActivity extends PreferenceActivity {
 			SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
 
 			boolean saved =  prefs.edit()
-					.putString("ARTIST_DIRECTORY", treeUri.toString())
+					.putString("ARTIST_DIRECTORY", musicDir)
 					.commit();
-
-			//Before, this would put pickedDir instead of treeUri.toString().
 
             Log.i(TAG, "Preferences update success: " + saved);
 
